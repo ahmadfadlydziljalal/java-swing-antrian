@@ -14,7 +14,7 @@
     6. In case the number sent by the client was not a proper number, server (Server.java) sends back the message “Please send a proper number” to the client (Client.java)
 
  */
-package socketservergudang;
+package socket;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -29,7 +29,7 @@ import java.net.Socket;
  *
  * @author Sammy Guergachi <sguergachi at gmail.com>
  */
-public class SocketServerGudang extends Thread {
+public class SocketServer extends Thread {
 
     private ServerSocket serverSocket;
     private Socket clientSocket;
@@ -58,7 +58,7 @@ public class SocketServerGudang extends Thread {
     /**
      * Constructor
      */
-    public SocketServerGudang() {
+    public SocketServer() {
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException ex) {
@@ -133,7 +133,7 @@ public class SocketServerGudang extends Thread {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        SocketServerGudang socketServerGudang = new SocketServerGudang();
+        SocketServer socketServerGudang = new SocketServer();
         socketServerGudang.start();
     }
 

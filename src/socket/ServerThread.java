@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package socketservergudang;
+package socket;
 
 import java.io.IOException;
 import java.io.InputStream;
