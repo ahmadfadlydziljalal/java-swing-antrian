@@ -27,7 +27,7 @@ import java.net.Socket;
 
 /**
  *
- * @author Sammy Guergachi <sguergachi at gmail.com>
+ * @author ahmadfadlydziljalal <ahmadfadldziljalal@gmail.com>
  */
 public class SocketServer extends Thread {
 

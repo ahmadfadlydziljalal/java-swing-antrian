@@ -16,7 +16,6 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -29,6 +28,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,11 +38,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
-import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.UIManager;
 
 /**
  *
@@ -361,20 +357,24 @@ public class MainWindow extends javax.swing.JFrame {
             System.exit(0);
         });
 
+        ArrayList<Object> ipAddresess = new ArrayList<>();
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 
             //Lopping semua interfaces dan sesuaikan pattern
             IpValidator ipValidator = new IpValidator();
-            ArrayList<Object> ipAddresess = new ArrayList<Object>();
+            
+            
             while (interfaces.hasMoreElements()) {
+                
                 NetworkInterface networkInterface = interfaces.nextElement();
+                
                 // drop inactive
                 if (!networkInterface.isUp()) {
                     continue;
                 }
 
-                // smth we can explore
+                // Explore Inet Address
                 Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
 
                 while (addresses.hasMoreElements()) {
@@ -389,16 +389,10 @@ public class MainWindow extends javax.swing.JFrame {
 
             Collections.reverse(ipAddresess);
             jComboBox1.setModel(new DefaultComboBoxModel(ipAddresess.toArray()));
-        } catch (Exception e) {
-            e.printStackTrace();
+            
+        } catch (SocketException e) {
+            System.out.println(e.getStackTrace());
         }
-
-//        try {
-//            InetAddress inetAddress = InetAddress.getLocalHost();
-//            textFieldIPServer.setText(inetAddress.getHostAddress());
-//        } catch (UnknownHostException ex) {
-//            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }
 
     private String getDate() {

@@ -13,7 +13,7 @@ import java.net.Socket;
 
 /**
  * 
- * @author Sammy Guergachi <sguergachi at gmail.com>
+ * @author ahmadfadlydziljalal <ahmadfadldziljalal@gmail.com>
  */
 public class ServerThread implements Runnable{
 
@@ -27,7 +27,8 @@ public class ServerThread implements Runnable{
     
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); 
+        //To change body of generated methods, choose Tools | Templates.
     }
 
 }
