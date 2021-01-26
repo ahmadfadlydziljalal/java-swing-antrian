@@ -23,6 +23,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -39,6 +40,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.UIManager;
 
 /**
  *
@@ -77,7 +79,6 @@ public class MainWindow extends javax.swing.JFrame {
         jPanelServerLokal = new javax.swing.JPanel();
         labelIpServer = new javax.swing.JLabel();
         labelDirectory = new javax.swing.JLabel();
-        textFieldDirectory = new javax.swing.JTextField();
         btnStart = new javax.swing.JButton();
         btnStop = new javax.swing.JButton();
         labelLog = new javax.swing.JLabel();
@@ -88,8 +89,10 @@ public class MainWindow extends javax.swing.JFrame {
         textFieldPort = new javax.swing.JTextField();
         jComboBox1 = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
+        jSpinner1 = new javax.swing.JSpinner();
         jPanelAboutMe = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
 
         setTitle("Server Antrian");
         setAlwaysOnTop(true);
@@ -99,15 +102,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         labelIpServer.setText("IP SERVER");
 
-        labelDirectory.setText("DIRECTORY");
-
-        textFieldDirectory.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        textFieldDirectory.setText("D:\\Server Warehouse");
-        textFieldDirectory.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textFieldDirectoryActionPerformed(evt);
-            }
-        });
+        labelDirectory.setText("JUMLAH KONTER");
 
         btnStart.setBackground(new java.awt.Color(51, 255, 0));
         btnStart.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -172,27 +167,26 @@ public class MainWindow extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanelServerLokalLayout.createSequentialGroup()
                         .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1)
                             .addGroup(jPanelServerLokalLayout.createSequentialGroup()
                                 .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(labelIpServer, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(labelPort, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(labelDirectory, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(jPanelServerLokalLayout.createSequentialGroup()
-                                        .addComponent(btnStart)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
-                                        .addComponent(btnStop))
-                                    .addComponent(textFieldDirectory)
-                                    .addComponent(textFieldPort)
-                                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addComponent(labelDirectory, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(29, 33, Short.MAX_VALUE)
+                                .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jSpinner1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+                                    .addComponent(textFieldPort, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelServerLokalLayout.createSequentialGroup()
                                 .addComponent(labelCopyRight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton1))
-                            .addGroup(jPanelServerLokalLayout.createSequentialGroup()
-                                .addComponent(jScrollPane1)
-                                .addGap(5, 5, 5)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelServerLokalLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnStart)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnStop)))
                         .addContainerGap())))
         );
         jPanelServerLokalLayout.setVerticalGroup(
@@ -208,8 +202,8 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(labelPort))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textFieldDirectory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelDirectory))
+                    .addComponent(labelDirectory)
+                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnStart)
@@ -217,7 +211,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGap(1, 1, 1)
                 .addComponent(labelLog)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelCopyRight)
@@ -243,20 +237,41 @@ public class MainWindow extends javax.swing.JFrame {
         );
         jPanelAboutMeLayout.setVerticalGroup(
             jPanelAboutMeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("About Me ", new javax.swing.ImageIcon(getClass().getResource("/img/instagram-symbol.png")), jPanelAboutMe); // NOI18N
+
+        jPanel1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 510, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jTabbedPane1)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
         );
 
         pack();
@@ -272,18 +287,6 @@ public class MainWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
-    
-    private void updateIcon(String path){
-        URL resource;
-        resource = getClass().getResource(path);
-        
-        if (SystemTray.isSupported()) {
-            Image image = Toolkit.getDefaultToolkit().getImage(resource);
-            setIconImage(image);
-            trayIcon.setImage(image);
-        }
-    }
-    
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
 
         try {
@@ -294,19 +297,28 @@ public class MainWindow extends javax.swing.JFrame {
 
         btnStart.setEnabled(true);
         btnStop.setEnabled(false);
-        textFieldPort.setText("");
-        textFieldDirectory.setEnabled(true);
+        
+        jSpinner1.setEnabled(true);
+        textFieldPort.setEnabled(true);
+        jComboBox1.setEnabled(true);
 
         textAreaLog.setText("");
-        
-        updateIcon("/img/favicon-red.png");
 
-        
+        updateIcon("/img/favicon-red.png");
     }//GEN-LAST:event_btnStopActionPerformed
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
-        if (textFieldDirectory.getText() != null && !textFieldDirectory.getText().isEmpty()) {
-            
+        try {
+            jSpinner1.commitEdit();
+        } catch (java.text.ParseException e) {
+            textAreaLog.setText(e.getMessage());
+        } 
+        
+        int value =  (Integer) jSpinner1.getValue();
+        
+        System.out.println(value);
+        if ( value > 0) {
+
             btnStart.setEnabled(false);
             //Hidupkan Button Stop
             btnStop.setEnabled(true);
@@ -315,9 +327,11 @@ public class MainWindow extends javax.swing.JFrame {
             textFieldPort.setText(String.valueOf(59090));
 
             //Cegah User menggeanti tempat direktorinya
-            textFieldDirectory.setEnabled(false);
+            jSpinner1.setEnabled(false);
+            textFieldPort.setEnabled(false);
+            jComboBox1.setEnabled(false);
 
-            // Update Icon    
+            // Update Icon
             updateIcon("/img/favicon.png");
 
             Thread starter = new Thread(new ServerStart());
@@ -325,14 +339,20 @@ public class MainWindow extends javax.swing.JFrame {
 
             textAreaLog.append("Main Thread " + starter.getName() + " \n");
         } else {
-            textAreaLog.append(this.createLog(
-                    "Direktori belum diisi", "Failed"));
+            textAreaLog.append(this.createLog("Jumlah Konter belum sesuai", "Failed"));
         }
     }//GEN-LAST:event_btnStartActionPerformed
 
-    private void textFieldDirectoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldDirectoryActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_textFieldDirectoryActionPerformed
+    private void updateIcon(String path) {
+        URL resource;
+        resource = getClass().getResource(path);
+
+        if (SystemTray.isSupported()) {
+            Image image = Toolkit.getDefaultToolkit().getImage(resource);
+            setIconImage(image);
+            trayIcon.setImage(image);
+        }
+    }
 
     public void windowIconified(WindowEvent e) {
         setVisible(false);
@@ -341,20 +361,22 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void dzilInit() {
 
-//        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/favicon.png")));
+        Integer jumlahKonter = 1;
+        jSpinner1.setValue(jumlahKonter);
 
+    
+//        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/favicon.png")));
         ArrayList<Object> ipAddresess = new ArrayList<>();
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 
             //Lopping semua interfaces dan sesuaikan pattern
             IpValidator ipValidator = new IpValidator();
-            
-            
+
             while (interfaces.hasMoreElements()) {
-                
+
                 NetworkInterface networkInterface = interfaces.nextElement();
-                
+
                 // drop inactive
                 if (!networkInterface.isUp()) {
                     continue;
@@ -375,7 +397,7 @@ public class MainWindow extends javax.swing.JFrame {
 
             Collections.reverse(ipAddresess);
             jComboBox1.setModel(new DefaultComboBoxModel(ipAddresess.toArray()));
-            
+
         } catch (SocketException e) {
             System.out.println(e.getStackTrace());
         }
@@ -391,7 +413,7 @@ public class MainWindow extends javax.swing.JFrame {
             System.out.println("SystemTray is not supported");
             return;
         }
-        
+
         PopupMenu popup = new PopupMenu();
         trayIcon = new TrayIcon(image, " Dzil Keren ", popup);
         trayIcon.setImageAutoSize(true);
@@ -418,7 +440,6 @@ public class MainWindow extends javax.swing.JFrame {
             System.exit(0);
         });
 
-        
     }
 
     private String getDate() {
@@ -465,17 +486,14 @@ public class MainWindow extends javax.swing.JFrame {
                     break;
                 }
 
-//                UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");  // This line gives Windows Theme
+                // UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");  // This line gives Windows Theme
+                // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+
         //</editor-fold>
 
         /* Create and display the form */
@@ -486,7 +504,6 @@ public class MainWindow extends javax.swing.JFrame {
         });
     }
 
-
     public class ServerStart implements Runnable {
 
         @Override
@@ -496,11 +513,11 @@ public class MainWindow extends javax.swing.JFrame {
                 while (true) {
                     Socket clientSocket = null;
                     clientSocket = serverSocket.accept();
+                    textAreaLog.append("Request: " + clientSocket.getInetAddress() + " - ");
 
                     // create each thread
                     Thread listener = new Thread(new ClientHandler(clientSocket));
                     listener.start();
-                    textAreaLog.append("\n" + "Thread Listering: " + listener.getName() + "\n");
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -525,91 +542,19 @@ public class MainWindow extends javax.swing.JFrame {
         @Override
         public void run() {
             try {
+                // get the input stream from the connected socket
+                InputStream inputStream = socket.getInputStream();
 
-                DataInputStream dataInputStream = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+                // create a DataInputStream so we can read data from it.
+                DataInputStream dataInputStream = new DataInputStream(inputStream);
 
-                //Method untuk meyimoan ke folder mana
-                String methodGudang = dataInputStream.readUTF();
-                textAreaLog.append("Action: " + methodGudang + "\n");
-
-                // read parent file
-                String parent = dataInputStream.readUTF();
-                textAreaLog.append("Parent Folder: " + parent + "\n");
-
-                //read the number of files from the client
-                int number = dataInputStream.readInt();
-                textAreaLog.append("File yang akan diterima berjumlah: " + number + "\n");
-
-                ArrayList<File> files = new ArrayList<File>(number);
-
-                //read file names, add files to arraylist
-                for (int i = 0; i < number; i++) {
-                    File file = new File(dataInputStream.readUTF());
-                    files.add(file);
-                }
-
-                ArrayList<Long> size = new ArrayList<Long>(number);
-                long longSize;
-                for (int i = 0; i < number; i++) {
-                    longSize = dataInputStream.readLong();
-                    size.add(longSize);
-                }
-
-                int n = 0;
-                byte[] buf = new byte[4092];
-
-                path = Paths.get(
-                        textFieldDirectory.getText()
-                        + File.separator
-                        + methodGudang + File.separator
-                        + getDate() + " - " + parent);
-
-                Files.createDirectories(path);
-
-                textAreaLog.append("Direktori: " + path + " sudah dibuat" + "\n");
-                textAreaLog.append("Memulai proses upload: " + "\n");
-
-                String start = getDateTime();
-
-                for (int i = 0; i < files.size(); i++) {
-
-                    long fileSize = size.get(i);
-                    textAreaLog.append("File Diterima: " + files.get(i).getPath() + " size: " + fileSize + "\n");
-
-                    //create a new fileoutputstream for each new file with fileParent
-                    FileOutputStream fileOutputStream
-                            = new FileOutputStream(
-                                    path + File.separator
-                                    + files.get(i).getName());
-
-                    //read file
-                    while (fileSize > 0 && (n = dataInputStream.read(buf, 0, (int) Math.min(buf.length, fileSize))) != -1) {
-                        fileOutputStream.write(buf, 0, n);
-                        fileSize -= n;
-                    }
-
-                    fileOutputStream.close();
-                }
-
-                try {
-                    MyTelegram.sendMesssage(
-                            "Pengambilan Foto " + methodGudang + "\n"
-                            + "Data: " + parent + "\n"
-                            + "Jumlah File: " + number + "\n"
-                            + "Start: " + start + "\n"
-                            + "Finish: " + getDateTime() + "\n"
-                            + "Silahkan lihat di server direktori " + path
-                    );
-                    textAreaLog.append("Notifikasi telegram terkirim \n");
-                } catch (Exception e) {
-                    textAreaLog.append("Notifikasi telegram tidak terkirim " + e.getMessage() + "\n");
-                }
+                String message = dataInputStream.readUTF();
+                textAreaLog.append(message + "\n");
 
                 dataInputStream.close();
+
             } catch (IOException ex) {
                 textAreaLog.append(ex.getMessage());
-            } finally {
-                textAreaLog.append("Socket Thread " + socket.getPort() + " is Done " + "\n");
             }
         }
     }
@@ -621,9 +566,11 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelAboutMe;
     private javax.swing.JPanel jPanelServerLokal;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSpinner jSpinner1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel labelCopyRight;
     private javax.swing.JLabel labelDirectory;
@@ -631,7 +578,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel labelLog;
     private javax.swing.JLabel labelPort;
     private javax.swing.JTextArea textAreaLog;
-    private javax.swing.JTextField textFieldDirectory;
     private javax.swing.JTextField textFieldPort;
     // End of variables declaration//GEN-END:variables
 }
