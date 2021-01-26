@@ -272,6 +272,18 @@ public class MainWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
+    
+    private void updateIcon(String path){
+        URL resource;
+        resource = getClass().getResource(path);
+        
+        if (SystemTray.isSupported()) {
+            Image image = Toolkit.getDefaultToolkit().getImage(resource);
+            setIconImage(image);
+            trayIcon.setImage(image);
+        }
+    }
+    
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
 
         try {
@@ -286,17 +298,27 @@ public class MainWindow extends javax.swing.JFrame {
         textFieldDirectory.setEnabled(true);
 
         textAreaLog.setText("");
+        
+        updateIcon("/img/favicon-red.png");
 
-        URL resource;
-        resource = getClass().getResource("/img/favicon-red.png");
-        Image image = Toolkit.getDefaultToolkit().getImage(resource);
-        setIconImage(image);
-        trayIcon.setImage(image);
+        
     }//GEN-LAST:event_btnStopActionPerformed
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
         if (textFieldDirectory.getText() != null && !textFieldDirectory.getText().isEmpty()) {
-            actionAfterButtonStartClick();
+            
+            btnStart.setEnabled(false);
+            //Hidupkan Button Stop
+            btnStop.setEnabled(true);
+
+            //Beri Informasi port berapa dia jalan
+            textFieldPort.setText(String.valueOf(59090));
+
+            //Cegah User menggeanti tempat direktorinya
+            textFieldDirectory.setEnabled(false);
+
+            // Update Icon    
+            updateIcon("/img/favicon.png");
 
             Thread starter = new Thread(new ServerStart());
             starter.start();
@@ -320,42 +342,6 @@ public class MainWindow extends javax.swing.JFrame {
     private void dzilInit() {
 
 //        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/favicon.png")));
-        URL resource;
-        resource = getClass().getResource("/img/favicon-red.png");
-
-        Image image = Toolkit.getDefaultToolkit().getImage(resource);
-        setIconImage(image);
-
-        //Check the SystemTray support
-        if (!SystemTray.isSupported()) {
-            System.out.println("SystemTray is not supported");
-            return;
-        }
-        PopupMenu popup = new PopupMenu();
-        trayIcon = new TrayIcon(image, " Dzil Keren ", popup);
-        trayIcon.setImageAutoSize(true);
-        tray = SystemTray.getSystemTray();
-
-        MenuItem exitItem = new MenuItem("Exit");
-
-        popup.add(exitItem);
-        trayIcon.setPopupMenu(popup);
-
-        try {
-            tray.add(trayIcon);
-        } catch (AWTException e) {
-            System.out.println("TrayIcon could not be added.");
-            return;
-        }
-
-        trayIcon.addActionListener((ActionEvent e) -> {
-            setVisible(true);
-        });
-
-        exitItem.addActionListener((ActionEvent e) -> {
-            tray.remove(trayIcon);
-            System.exit(0);
-        });
 
         ArrayList<Object> ipAddresess = new ArrayList<>();
         try {
@@ -393,6 +379,46 @@ public class MainWindow extends javax.swing.JFrame {
         } catch (SocketException e) {
             System.out.println(e.getStackTrace());
         }
+
+        URL resource;
+        resource = getClass().getResource("/img/favicon-red.png");
+
+        Image image = Toolkit.getDefaultToolkit().getImage(resource);
+        setIconImage(image);
+
+        //Check the SystemTray support
+        if (!SystemTray.isSupported()) {
+            System.out.println("SystemTray is not supported");
+            return;
+        }
+        
+        PopupMenu popup = new PopupMenu();
+        trayIcon = new TrayIcon(image, " Dzil Keren ", popup);
+        trayIcon.setImageAutoSize(true);
+        tray = SystemTray.getSystemTray();
+
+        MenuItem exitItem = new MenuItem("Exit");
+
+        popup.add(exitItem);
+        trayIcon.setPopupMenu(popup);
+
+        try {
+            tray.add(trayIcon);
+        } catch (AWTException e) {
+            System.out.println("TrayIcon could not be added.");
+            return;
+        }
+
+        trayIcon.addActionListener((ActionEvent e) -> {
+            setVisible(true);
+        });
+
+        exitItem.addActionListener((ActionEvent e) -> {
+            tray.remove(trayIcon);
+            System.exit(0);
+        });
+
+        
     }
 
     private String getDate() {
@@ -460,24 +486,6 @@ public class MainWindow extends javax.swing.JFrame {
         });
     }
 
-    private void actionAfterButtonStartClick() {
-        btnStart.setEnabled(false);
-        //Hidupkan Button Stop
-        btnStop.setEnabled(true);
-
-        //Beri Informasi port berapa dia jalan
-        textFieldPort.setText(String.valueOf(59090));
-
-        //Cegah User menggeanti tempat direktorinya
-        textFieldDirectory.setEnabled(false);
-
-        // Update Icon
-        URL resource;
-        resource = getClass().getResource("/img/favicon.png");
-        Image image = Toolkit.getDefaultToolkit().getImage(resource);
-        setIconImage(image);
-        trayIcon.setImage(image);
-    }
 
     public class ServerStart implements Runnable {
 
