@@ -78,7 +78,6 @@ public class MainWindow extends javax.swing.JFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanelServerLokal = new javax.swing.JPanel();
         labelIpServer = new javax.swing.JLabel();
-        labelDirectory = new javax.swing.JLabel();
         btnStart = new javax.swing.JButton();
         btnStop = new javax.swing.JButton();
         labelLog = new javax.swing.JLabel();
@@ -89,20 +88,24 @@ public class MainWindow extends javax.swing.JFrame {
         textFieldPort = new javax.swing.JTextField();
         jComboBox1 = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
-        jSpinner1 = new javax.swing.JSpinner();
         jPanelAboutMe = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         setTitle("Server Antrian");
-        setAlwaysOnTop(true);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
+        jTabbedPane1.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
 
         jPanelServerLokal.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         labelIpServer.setText("IP SERVER");
-
-        labelDirectory.setText("JUMLAH KONTER");
 
         btnStart.setBackground(new java.awt.Color(51, 255, 0));
         btnStart.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -171,13 +174,11 @@ public class MainWindow extends javax.swing.JFrame {
                             .addGroup(jPanelServerLokalLayout.createSequentialGroup()
                                 .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(labelIpServer, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(labelPort, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(labelDirectory, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(29, 33, Short.MAX_VALUE)
+                                    .addComponent(labelPort, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(61, 65, Short.MAX_VALUE)
                                 .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jSpinner1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
                                     .addComponent(textFieldPort, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, 0, 199, Short.MAX_VALUE)))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelServerLokalLayout.createSequentialGroup()
                                 .addComponent(labelCopyRight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -200,18 +201,14 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textFieldPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelPort))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelDirectory)
-                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(26, 26, 26)
                 .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnStart)
                     .addComponent(btnStop))
                 .addGap(1, 1, 1)
                 .addComponent(labelLog)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelCopyRight)
@@ -237,7 +234,7 @@ public class MainWindow extends javax.swing.JFrame {
         );
         jPanelAboutMeLayout.setVerticalGroup(
             jPanelAboutMeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("About Me ", new javax.swing.ImageIcon(getClass().getResource("/img/instagram-symbol.png")), jPanelAboutMe); // NOI18N
@@ -255,6 +252,40 @@ public class MainWindow extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
+        jMenu1.setText("File");
+
+        jMenuItem3.setText("Quit");
+        jMenu1.add(jMenuItem3);
+
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Edit");
+        jMenu2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenu2ActionPerformed(evt);
+            }
+        });
+
+        jMenuItem1.setText("Data Counter");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem1);
+
+        jMenuItem2.setText("Data Antrian");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem2);
+
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -267,11 +298,11 @@ public class MainWindow extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
             .addGroup(layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         pack();
@@ -297,8 +328,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         btnStart.setEnabled(true);
         btnStop.setEnabled(false);
-        
-        jSpinner1.setEnabled(true);
+
         textFieldPort.setEnabled(true);
         jComboBox1.setEnabled(true);
 
@@ -308,40 +338,39 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnStopActionPerformed
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
-        try {
-            jSpinner1.commitEdit();
-        } catch (java.text.ParseException e) {
-            textAreaLog.setText(e.getMessage());
-        } 
-        
-        int value =  (Integer) jSpinner1.getValue();
-        
-        System.out.println(value);
-        if ( value > 0) {
 
-            btnStart.setEnabled(false);
-            //Hidupkan Button Stop
-            btnStop.setEnabled(true);
+        btnStart.setEnabled(false);
+        //Hidupkan Button Stop
+        btnStop.setEnabled(true);
 
-            //Beri Informasi port berapa dia jalan
-            textFieldPort.setText(String.valueOf(59090));
+        //Beri Informasi port berapa dia jalan
+        textFieldPort.setText(String.valueOf(59090));
 
-            //Cegah User menggeanti tempat direktorinya
-            jSpinner1.setEnabled(false);
-            textFieldPort.setEnabled(false);
-            jComboBox1.setEnabled(false);
+        textFieldPort.setEnabled(false);
+        jComboBox1.setEnabled(false);
 
-            // Update Icon
-            updateIcon("/img/favicon.png");
+        // Update Icon
+        updateIcon("/img/favicon.png");
 
-            Thread starter = new Thread(new ServerStart());
-            starter.start();
+        Thread starter = new Thread(new ServerStart());
+        starter.start();
 
-            textAreaLog.append("Main Thread " + starter.getName() + " \n");
-        } else {
-            textAreaLog.append(this.createLog("Jumlah Konter belum sesuai", "Failed"));
-        }
+        textAreaLog.append("Main Thread " + starter.getName() + " \n");
     }//GEN-LAST:event_btnStartActionPerformed
+
+    private void jMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu2ActionPerformed
+
+    }//GEN-LAST:event_jMenu2ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        DataCounterWindow cw = new DataCounterWindow();
+        cw.setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        DataAntrianWindow da = new DataAntrianWindow();
+        da.setVisible(true);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void updateIcon(String path) {
         URL resource;
@@ -361,10 +390,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void dzilInit() {
 
-        Integer jumlahKonter = 1;
-        jSpinner1.setValue(jumlahKonter);
 
-    
 //        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/favicon.png")));
         ArrayList<Object> ipAddresess = new ArrayList<>();
         try {
@@ -566,14 +592,18 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelAboutMe;
     private javax.swing.JPanel jPanelServerLokal;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSpinner jSpinner1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel labelCopyRight;
-    private javax.swing.JLabel labelDirectory;
     private javax.swing.JLabel labelIpServer;
     private javax.swing.JLabel labelLog;
     private javax.swing.JLabel labelPort;
