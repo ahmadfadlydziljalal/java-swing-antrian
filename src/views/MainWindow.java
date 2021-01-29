@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui;
+package views;
 
-import api.telegram.MyTelegram;
+import controllers.MainAntrianController;
 import helper.IpValidator;
 import java.awt.AWTException;
 import java.awt.Image;
@@ -16,54 +16,53 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
+import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.UIManager;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  *
  * @author Sammy Guergachi <sguergachi at gmail.com>
  */
-public class MainWindow extends javax.swing.JFrame {
+public class MainWindow extends javax.swing.JFrame implements Runnable {
 
     public TrayIcon trayIcon;
     public SystemTray tray;
-    ArrayList clientOutputStreams;
-    ArrayList<String> users;
 
-    FileOutputStream fos;
-    BufferedOutputStream bos;
-    OutputStream output;
-    DataOutputStream dos;
+    int hour, minute, second;
+    Thread starter;
+
+    private MainAntrianController antrianController;
 
     /**
      * Creates new form MainWindow
      */
     public MainWindow() {
         initComponents();
+        Thread threadTimeDisplay = new Thread(this);
+        threadTimeDisplay.start();
         dzilInit();
+        addKeyBinding(this.getRootPane(), "F11", new utils.FullscreenToggleAction(this));
     }
 
     /**
@@ -77,20 +76,26 @@ public class MainWindow extends javax.swing.JFrame {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanelServerLokal = new javax.swing.JPanel();
-        labelIpServer = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabelCalendar = new javax.swing.JLabel();
+        jPanelMainAntrian = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableMainAntrian = new javax.swing.JTable();
+        jPanel3 = new javax.swing.JPanel();
         btnStart = new javax.swing.JButton();
         btnStop = new javax.swing.JButton();
-        labelLog = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         textAreaLog = new javax.swing.JTextArea();
-        labelPort = new javax.swing.JLabel();
-        labelCopyRight = new javax.swing.JLabel();
         textFieldPort = new javax.swing.JTextField();
         jComboBox1 = new javax.swing.JComboBox<>();
+        labelPort = new javax.swing.JLabel();
+        labelIpServer = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jGlobalNomorAntrianTerakhir = new javax.swing.JLabel();
         jPanelAboutMe = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
@@ -105,7 +110,80 @@ public class MainWindow extends javax.swing.JFrame {
 
         jPanelServerLokal.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        labelIpServer.setText("IP SERVER");
+        jLabel2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        jLabel2.setText("PT.Pelayaran Tresnamuda Sejati");
+
+        jLabelCalendar.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
+        jLabelCalendar.setText("dd:mm:yyyy hh:ii");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabelCalendar)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabelCalendar))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTableMainAntrian.setFont(new java.awt.Font("Arial", 0, 96)); // NOI18N
+        jTableMainAntrian.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Counter", "Antrian Dilayani"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTableMainAntrian.setRowHeight(124);
+        jTableMainAntrian.setRowMargin(24);
+        jScrollPane2.setViewportView(jTableMainAntrian);
+        if (jTableMainAntrian.getColumnModel().getColumnCount() > 0) {
+            jTableMainAntrian.getColumnModel().getColumn(0).setResizable(false);
+            jTableMainAntrian.getColumnModel().getColumn(1).setResizable(false);
+        }
+
+        javax.swing.GroupLayout jPanelMainAntrianLayout = new javax.swing.GroupLayout(jPanelMainAntrian);
+        jPanelMainAntrian.setLayout(jPanelMainAntrianLayout);
+        jPanelMainAntrianLayout.setHorizontalGroup(
+            jPanelMainAntrianLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelMainAntrianLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanelMainAntrianLayout.setVerticalGroup(
+            jPanelMainAntrianLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelMainAntrianLayout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         btnStart.setBackground(new java.awt.Color(51, 255, 0));
         btnStart.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -128,28 +206,28 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        labelLog.setText("Log Server");
-
         textAreaLog.setEditable(false);
         textAreaLog.setColumns(20);
         textAreaLog.setFont(new java.awt.Font("Arial Narrow", 0, 12)); // NOI18N
         textAreaLog.setRows(5);
         jScrollPane1.setViewportView(textAreaLog);
 
-        labelPort.setText("PORT");
-
-        labelCopyRight.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        labelCopyRight.setText("Copyright By Dzil, Jakarta. V.1.2.0");
-
         textFieldPort.setEditable(false);
+        textFieldPort.setBackground(new java.awt.Color(102, 102, 102));
         textFieldPort.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        textFieldPort.setForeground(new java.awt.Color(255, 255, 255));
         textFieldPort.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        textFieldPort.setText("59090");
 
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
             }
         });
+
+        labelPort.setText("PORT");
+
+        labelIpServer.setText("IP SERVER");
 
         jButton1.setText("Clear");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -158,6 +236,75 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(labelIpServer)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(labelPort, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(textFieldPort, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(btnStart, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnStop)))
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelIpServer))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(labelPort, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textFieldPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnStart)
+                    .addComponent(btnStop))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addContainerGap())
+        );
+
+        jGlobalNomorAntrianTerakhir.setFont(new java.awt.Font("Arial", 0, 96)); // NOI18N
+        jGlobalNomorAntrianTerakhir.setText("0");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 236, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel4Layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jGlobalNomorAntrianTerakhir)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel4Layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jGlobalNomorAntrianTerakhir)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+
         javax.swing.GroupLayout jPanelServerLokalLayout = new javax.swing.GroupLayout(jPanelServerLokal);
         jPanelServerLokal.setLayout(jPanelServerLokalLayout);
         jPanelServerLokalLayout.setHorizontalGroup(
@@ -165,55 +312,27 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(jPanelServerLokalLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanelServerLokalLayout.createSequentialGroup()
-                        .addComponent(labelLog)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanelServerLokalLayout.createSequentialGroup()
+                        .addComponent(jPanelMainAntrian, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1)
-                            .addGroup(jPanelServerLokalLayout.createSequentialGroup()
-                                .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(labelIpServer, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(labelPort, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(61, 65, Short.MAX_VALUE)
-                                .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(textFieldPort, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, 0, 199, Short.MAX_VALUE)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelServerLokalLayout.createSequentialGroup()
-                                .addComponent(labelCopyRight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton1))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelServerLokalLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btnStart)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnStop)))
-                        .addContainerGap())))
+                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
         );
         jPanelServerLokalLayout.setVerticalGroup(
             jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelServerLokalLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelIpServer)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanelServerLokalLayout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textFieldPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelPort))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnStart)
-                    .addComponent(btnStop))
-                .addGap(1, 1, 1)
-                .addComponent(labelLog)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelCopyRight)
-                    .addComponent(jButton1))
-                .addContainerGap())
+                .addGroup(jPanelServerLokalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanelMainAntrian, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanelServerLokalLayout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
 
         jTabbedPane1.addTab("Server Lokal ", new javax.swing.ImageIcon(getClass().getResource("/img/cloud-storage-uploading-option.png")), jPanelServerLokal); // NOI18N
@@ -234,23 +353,10 @@ public class MainWindow extends javax.swing.JFrame {
         );
         jPanelAboutMeLayout.setVerticalGroup(
             jPanelAboutMeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 561, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("About Me ", new javax.swing.ImageIcon(getClass().getResource("/img/instagram-symbol.png")), jPanelAboutMe); // NOI18N
-
-        jPanel1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 510, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
 
         jMenu1.setText("File");
 
@@ -290,19 +396,13 @@ public class MainWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jTabbedPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(0, 0, 0)
+                .addComponent(jTabbedPane1))
         );
 
         pack();
@@ -312,6 +412,11 @@ public class MainWindow extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         textAreaLog.setText("");
+
+//        JFrame myFrame = new JFrame("Hello World");
+//        JDialog modal = new JDialog(myFrame, "This is a modal!", true);
+//        modal.setVisible(true);
+//        modal.setLocationRelativeTo(null); //Center the modal
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
@@ -320,21 +425,17 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
 
-        try {
-            Thread.sleep(5000);                 //5000 milliseconds is five second.
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
+        int dialogResult = JOptionPane.showConfirmDialog(null,
+                "Aplikasi akan ditutup?",
+                "Warning",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (dialogResult == 0) {
+            starter.interrupt();
+            System.exit(0);
         }
 
-        btnStart.setEnabled(true);
-        btnStop.setEnabled(false);
-
-        textFieldPort.setEnabled(true);
-        jComboBox1.setEnabled(true);
-
-        textAreaLog.setText("");
-
-        updateIcon("/img/favicon-red.png");
     }//GEN-LAST:event_btnStopActionPerformed
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
@@ -352,10 +453,14 @@ public class MainWindow extends javax.swing.JFrame {
         // Update Icon
         updateIcon("/img/favicon.png");
 
-        Thread starter = new Thread(new ServerStart());
+        // Panggil Antrian Controller 
+        antrianController = new MainAntrianController(jTableMainAntrian);
+        antrianController.getAll();
+
+        starter = new Thread(new ServerStart());
         starter.start();
 
-        textAreaLog.append("Main Thread " + starter.getName() + " \n");
+        textAreaLog.append(starter.getId() + ". App Server sudah siap. \n");
     }//GEN-LAST:event_btnStartActionPerformed
 
     private void jMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu2ActionPerformed
@@ -365,6 +470,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         DataCounterWindow cw = new DataCounterWindow();
         cw.setVisible(true);
+
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -389,7 +495,6 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     private void dzilInit() {
-
 
 //        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/favicon.png")));
         ArrayList<Object> ipAddresess = new ArrayList<>();
@@ -466,6 +571,7 @@ public class MainWindow extends javax.swing.JFrame {
             System.exit(0);
         });
 
+    
     }
 
     private String getDate() {
@@ -513,7 +619,7 @@ public class MainWindow extends javax.swing.JFrame {
                 }
 
                 // UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");  // This line gives Windows Theme
-                // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -534,8 +640,8 @@ public class MainWindow extends javax.swing.JFrame {
 
         @Override
         public void run() {
-            try {
-                ServerSocket serverSocket = new ServerSocket(59090);
+            try (ServerSocket serverSocket = new ServerSocket(59090)) {
+                serverSocket.setReuseAddress(true);
                 while (true) {
                     Socket clientSocket = null;
                     clientSocket = serverSocket.accept();
@@ -545,9 +651,10 @@ public class MainWindow extends javax.swing.JFrame {
                     Thread listener = new Thread(new ClientHandler(clientSocket));
                     listener.start();
                 }
+
             } catch (Exception ex) {
-                ex.printStackTrace();
-                textAreaLog.append(ex.getMessage());
+
+                textAreaLog.append("Warning " + ex.getMessage());
             }
         }
     }
@@ -577,7 +684,13 @@ public class MainWindow extends javax.swing.JFrame {
                 String message = dataInputStream.readUTF();
                 textAreaLog.append(message + "\n");
 
+                int antrianSekarang = Integer.parseInt(jGlobalNomorAntrianTerakhir.getText());
+                int nomorAntrian = dataInputStream.readInt();
+                int updatedAntrian = nomorAntrian + antrianSekarang;
+                jGlobalNomorAntrianTerakhir.setText(String.valueOf(updatedAntrian));
+                
                 dataInputStream.close();
+                socket.close();
 
             } catch (IOException ex) {
                 textAreaLog.append(ex.getMessage());
@@ -587,27 +700,55 @@ public class MainWindow extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnStart;
-    private javax.swing.JButton btnStop;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanelAboutMe;
-    private javax.swing.JPanel jPanelServerLokal;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JLabel labelCopyRight;
-    private javax.swing.JLabel labelIpServer;
-    private javax.swing.JLabel labelLog;
-    private javax.swing.JLabel labelPort;
-    private javax.swing.JTextArea textAreaLog;
-    private javax.swing.JTextField textFieldPort;
+    public javax.swing.JButton btnStart;
+    public javax.swing.JButton btnStop;
+    public javax.swing.JButton jButton1;
+    public javax.swing.JComboBox<String> jComboBox1;
+    public javax.swing.JLabel jGlobalNomorAntrianTerakhir;
+    public javax.swing.JLabel jLabel1;
+    public javax.swing.JLabel jLabel2;
+    public javax.swing.JLabel jLabelCalendar;
+    public javax.swing.JMenu jMenu1;
+    public javax.swing.JMenu jMenu2;
+    public javax.swing.JMenuBar jMenuBar1;
+    public javax.swing.JMenuItem jMenuItem1;
+    public javax.swing.JMenuItem jMenuItem2;
+    public javax.swing.JMenuItem jMenuItem3;
+    public javax.swing.JPanel jPanel1;
+    public javax.swing.JPanel jPanel3;
+    public javax.swing.JPanel jPanel4;
+    public javax.swing.JPanel jPanelAboutMe;
+    public javax.swing.JPanel jPanelMainAntrian;
+    public javax.swing.JPanel jPanelServerLokal;
+    public javax.swing.JScrollPane jScrollPane1;
+    public javax.swing.JScrollPane jScrollPane2;
+    public javax.swing.JTabbedPane jTabbedPane1;
+    public javax.swing.JTable jTableMainAntrian;
+    public javax.swing.JLabel labelIpServer;
+    public javax.swing.JLabel labelPort;
+    public javax.swing.JTextArea textAreaLog;
+    public javax.swing.JTextField textFieldPort;
     // End of variables declaration//GEN-END:variables
+
+    public void run() {
+        while (true) {
+            Calendar calendar = Calendar.getInstance();
+            hour = calendar.get(calendar.HOUR_OF_DAY);
+            minute = calendar.get(calendar.MINUTE);
+            second = calendar.get(calendar.SECOND);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            Date date = calendar.getTime();
+            String time24 = sdf.format(date);
+
+            jLabelCalendar.setText(time24);
+        }
+    }
+
+    public static final void addKeyBinding(JComponent c, String key, final Action action) {
+        c.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(key), key);
+        c.getActionMap().put(key, action);
+        c.setFocusable(true);
+    }
+
 }
